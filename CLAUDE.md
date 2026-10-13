@@ -9,11 +9,11 @@
 - `reference/`：上游 Zed 主題原樣保存，是配色規格。不要修改，也不要打包進 `.vsix`
 
 ## 目前狀態（2026-10-13）
-- repo 已用 `git init` 建立，**還沒有任何 commit**。只有文件、`LICENSE`、`reference/`，還沒有程式碼。
+- repo 已用 `git init` 建立，並已做第一個 commit。只有文件、`LICENSE`、`reference/`，還沒有程式碼。本機（`--local`）git 身分已設為 `xsmBradPitt`。
 - spec 是在上游 fork（`../blade-runner-2049-theme-for-zed`）的 Claude Code session 裡，經過 grilling 訪談後寫出來的。決策已經定案，不要重新討論。
 
 ## 待辦（依序）
-1. 使用者檢查文件 → 做第一個 commit。
+1. ~~使用者檢查文件 → 做第一個 commit。~~ 已完成（2026-10-13）。
 2. `gh` 目前登入的是 `xsmJohnnyDepp`。建 GitHub repo、開 issue 之前，要請使用者執行 `! gh auth switch`，切到 `xsmBradPitt`。
 3. 建立 GitHub repo `xsmBradPitt/interlinked-theme`（對外操作，要先取得使用者確認），並把 spec 開成帶有 `ready-for-agent` 標籤的 issue。可以考慮先跑 `/setup-matt-pocock-skills`。
 4. 在 VS Code Marketplace 和 Open VSX 搜尋 `interlinked`，確認沒有撞名。
