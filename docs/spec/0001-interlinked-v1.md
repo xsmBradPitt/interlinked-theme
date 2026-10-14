@@ -9,7 +9,7 @@
 
 ## Solution
 
-建立一個獨立的擴充套件 **Interlinked**（`xsmbradpitt.interlinked-theme`），同時發布到 VS Code Marketplace 和 Open VSX（Cursor 從 Open VSX 安裝）。v1.0 只提供一個深色主題。以 **Reference Theme** 作為配色規格，把它的顏色整理成一組有名字的 **Palette**，再由一個產生器用 Palette 組出完整的 VS Code 主題：工作區配色依 **UI Area** 清單完整覆蓋，語法配色同時提供 TextMate scope 和 semantic token 兩套。產出的主題由自動化測試檢查結構、Palette 紀律和對比度，再用 **Sample** 檔在 VS Code 和 Cursor 裡目視驗證。推送版本 tag 時，CI 會把同一個 `.vsix` 發布到兩個市集，並建立 GitHub Release。
+建立一個獨立的擴充套件 **Interlinked**（`xsmbradpitt.interlinked-theme`），同時發布到 VS Code Marketplace 和 Open VSX（Cursor 從 Open VSX 安裝）。v1.0 只提供一個深色主題。以 **Reference Theme** 作為配色規格，把它的顏色整理成一組有名字的 **Palette**，再由一個產生器用 Palette 組出完整的 VS Code 主題：工作區配色依 **UI Area** 清單完整覆蓋，語法配色同時提供 TextMate scope 和 semantic token 兩套。產出的主題由自動化測試檢查結構、Palette 紀律和對比度，再用 **Sample** 檔在 VS Code 和 Cursor 裡目視驗證。推送版本 tag 時，CI 會打包 `.vsix`、發布到 Open VSX，並建立 GitHub Release；VS Code Marketplace 則由維護者從 GitHub Release 下載同一個 `.vsix`，手動上傳到管理頁。
 
 ## User Stories
 
@@ -88,11 +88,11 @@
 60. As the maintainer, I want automated contrast tests for key foreground/background pairs, so that readability regressions are caught.
 61. As the maintainer, I want a Sample file per verified language, so that I can visually check highlighting and reproduce screenshots.
 62. As the maintainer, I want the Reference Theme kept verbatim in the repo with its provenance, so that I can diff upstream updates and prove attribution.
-63. As the maintainer, I want pushing a `v*` tag to build, test, package, and publish the identical `.vsix` to both marketplaces, so that the two never drift.
+63. As the maintainer, I want pushing a `v*` tag to build, test, package, and publish to Open VSX, and then to upload that same `.vsix` from the GitHub Release to the VS Code Marketplace by hand, so that the two listings never drift.
 64. As the maintainer, I want CI to attach the `.vsix` to a GitHub Release, so that manual installs are possible.
 65. As the maintainer, I want CI to run build and tests on every push and PR, so that broken themes never reach a tag.
 66. As the maintainer, I want a hand-written CHANGELOG, so that users see what changed on the extension page.
-67. As the maintainer, I want marketplace tokens stored only as repository secrets, so that credentials never sit in the repo.
+67. As the maintainer, I want any token that CI uses (the Open VSX token, until trusted publishing replaces it) stored only as a repository secret, so that credentials never sit in the repo. The VS Code Marketplace needs no token because I upload by hand.
 
 ### 授權與署名
 68. As the upstream author, I want my copyright notice preserved and my work credited with a link, so that MIT and CC BY 4.0 obligations are met.
@@ -106,11 +106,11 @@
 - **Theme 產生器模組**：輸入 Palette，輸出完整的主題物件，包含 `colors`、`tokenColors`、`semanticHighlighting: true`、`semanticTokenColors`。需要透明度時，由小工具以「Palette 色 + alpha」組合，不准直接寫 hex。build 指令把這個物件寫成打包用的主題 JSON。只用純 Node ES modules，不需要執行期依賴。
 - **介面約定（產生器對外的唯一 seam）**：`buildTheme(palette) → themeObject`。其他模組（build 腳本、測試）都只透過這個函式取得主題。
 - **UI Area 清單（v1.0 必須完整覆蓋）**：editor（含 gutter、bracket pair、diagnostics、inlay hints、sticky scroll）、sideBar、activityBar、statusBar、titleBar、tabs（editorGroupHeader / tab）、panel、terminal（含 16 個 ANSI 色）、lists/trees、input / dropdown / checkbox / button、notifications、peek view、diff editor、merge conflict、git decorations、minimap、scrollbar、breadcrumbs、quick input / command palette、widgets（hover / suggest / find）、badges / progress、focus border。清單以資料形式存在 repo 裡，測試也讀同一份資料。預估約 250 到 300 個 key。清單外的 key 交給 VS Code 預設值。
-- **底色決策**：VS Code / Cursor 不支援視窗透明，因此把 Reference Theme 的半透明 `background` 改定為不透明實色，目標是保留上游截圖的觀感。具體的值在實作時用 prototype 目視決定。所有底色類的 key 都必須不透明。
+- **底色決策**：VS Code / Cursor 不支援視窗透明，因此把 Reference Theme 的半透明 `background`（`#062A4050`）改定為不透明實色，目標是保留上游截圖的觀感。所有底色類的 key 都必須不透明。**定案（2026-10-14，prototype 目視，選「疊在黑底上」）**：上游截圖裡 `background` 幾乎不可見，看到的是 `#001A1Abb` 疊在黑底上的結果，所以 chrome（titleBar、statusBar）的不透明實色為 `#001313`，與 screenshot-02 取樣像素一致；tab bar 取樣為 `#002022`（Reference Theme 的數值推不出來，維持取樣值）；activityBar 上游沒有對應區域、無取樣值，沿用 chrome 的 `#001313`。editor `#001F1F`、sideBar `#001A1A`、terminal `#062A40` 沿用 Reference Theme 原值。**不採用**字面去掉 alpha 的 `#062A40`（chrome 會與 terminal 同色，和上游截圖差異最大）。以上每個值在 Palette 裡都要有名字，不直接寫 hex。
 - **語法對應策略**：把 Reference Theme 的 39 個 tree-sitter capture（如 `keyword`、`function`、`type`、`variable.special`、`string.escape`、`punctuation.bracket`、`link_uri`）對應到三層：(1) semantic token 類型與修飾詞；(2) 通用 TextMate scope；(3) 針對驗證清單語言的特定 scope。因為 HTML、CSS、SQL、Bash、JSON、YAML、Markdown 只有 TextMate grammar，第 2、3 層是主力，不是備援。字體樣式（斜體、粗體）沿用 Reference Theme 的設定。
 - **驗證語言清單**：TypeScript/JavaScript、C#、Kotlin、Java、HTML、CSS、SQL、Bash、JSON、YAML、Markdown。C# 必須在 VS Code 和 Cursor 都驗證過。
 - **Reference Theme**：原樣保存，旁邊附 provenance 說明（上游 repo、fork 的 commit、授權）。不打包進 `.vsix`。上游更新的流程是：fork 同步上游 → 複製檔案過來 → diff → 手動調整 Palette 和產生器。
-- **發布流程**：GitHub Actions。每次 push 和 PR 都跑 build 與測試；推送 `v*` tag 時，額外執行 package → 用同一個 `.vsix` 先後發布到 VS Code Marketplace 和 Open VSX → 建立 GitHub Release 並附上 `.vsix`。token 存在 repo secrets（Marketplace PAT、Open VSX token）。版本號手動維護在套件 manifest，CHANGELOG 手寫。
+- **發布流程**：GitHub Actions。每次 push 和 PR 都跑 build 與測試；推送 `v*` tag 時，額外執行 package → 發布到 Open VSX → 建立 GitHub Release 並附上 `.vsix`。**VS Code Marketplace 不由 CI 發布**：維護者從 GitHub Release 下載同一個 `.vsix`，到 Marketplace 管理頁手動上傳（認證路線 R1，見 `docs/research/0001-marketplace-and-open-vsx-publishing.md` 第 4.0 節）。定案原因（2026-10-14）：維護者沒有 Azure subscription，無法建立 PAT 路線需要的 Azure DevOps organization；Azure DevOps 全域 PAT 於 2026-12-01 停用；Marketplace 的無 PAT 發布（`vsce publish --oidc`）後端尚未上線。workflow 不放 `VSCE_PAT`，也不加 Marketplace 發布步驟；日後無 PAT 發布上線時，另以新決策補上。Open VSX 端的認證（token 或 trusted publishing）依研究文件第 5.1 節 B8，實作 workflow 時決定。版本號手動維護在套件 manifest，CHANGELOG 手寫。
 - **授權與署名**：MIT，`LICENSE` 保留 `Copyright (c) 2024 Takk8IS` 並加上 `Copyright (c) 2026 xsmBradPitt`（已完成）。README 的 Credits 段落註明原作者 David C Cavalcante / Takk™ Innovate Studio、上游 repo 連結、上游標示的 MIT 與 CC BY 4.0 兩種授權，並註明「已修改並改作為 VS Code 主題」。
 - **README 素材**：頂部放自製截圖，至少包含 TS 程式碼加側邊欄、終端機加 git diff、Markdown，以及一張 Cursor 畫面。電影畫面依 ADR 0002 處理：外連到上游、附版權說明、只放在底部的靈感段落。README 中的圖片一律用 https 絕對網址，非徽章類的圖片不用 SVG。`.vsix` 透過 ignore 設定排除 `reference/`、`samples/`、`docs/`、測試與原始碼裡不需要的部分。
 
@@ -140,8 +140,8 @@
 ## Further Notes
 
 - **上架前**：先在 VS Code Marketplace 和 Open VSX 搜尋 `interlinked`，確認沒有撞名。
-- **帳號**：在 Marketplace 建立 publisher `xsmbradpitt`。在 Open VSX 用 Eclipse 帳號簽 Publisher Agreement、建立 namespace `xsmbradpitt`，並申請 namespace 驗證。`vsce` 的驗證方式，實作時要查最新的官方文件。
-- **Marketplace PAT 最長一年就到期**：要在行事曆設提醒，否則 CI 會發布失敗。
+- **帳號**：Marketplace publisher `xsmbradpitt` 已於 2026-10-14 建立。Open VSX 還要用 Eclipse 帳號簽 Publisher Agreement、建立 namespace `xsmbradpitt`，並申請 namespace 驗證。Marketplace 手動上傳，不需要 `vsce` 的發布認證（PAT、Entra ID）。**首次發布順序**：先手動上傳 Marketplace 第一版（`package.json` 要有指向 `https://github.com/xsmBradPitt/interlinked-theme` 的 `repository`），再開 Open VSX 的 namespace claim issue，`granted` 之後 CI 才能發布 Open VSX，否則第一版會卡在「under review」（研究文件第 3 節）。各步驟見 `docs/research/0001-marketplace-and-open-vsx-publishing.md`。
+- **Open VSX token 約 90 天到期**（正式環境設定值，以 tokens 頁的 Expires 欄為準）：用 token 發布期間要在行事曆設提醒，否則 CI 會發布失敗；改用 trusted publishing 後不再需要。Marketplace 因為手動上傳，沒有 token 到期問題。
 - **`gh` 目前登入的是 `xsmJohnnyDepp`**：建 GitHub repo、開 issue 之前，要先切換到 `xsmBradPitt`。
 - 上游 fork（`xsmBradPitt/blade-runner-2049-theme-for-zed`）保持原樣，並與上游同步，作為 Reference Theme 的更新來源。
 - 原作 README 寫主色是「amber-orange 和 cyan」，但實際統計的結果，主調是青綠色、琥珀色只是點綴。命名和行銷文字要以實際配色為準。

@@ -5,6 +5,7 @@
 > 約定：每條事實後面的 `[S#]` 是來源連結，完整清單與「實際讀到的頁面標題」見文末。
 > 「需登入後確認」＝ 該畫面要登入才看得到，公開來源無法驗證，文件不編造 UI 文字。
 > 命令、網址、scope 名稱逐字抄自來源；範例一律用 `<YOUR_TOKEN>` 佔位符，不含任何真實 token。
+> 修訂（2026-10-14）：4.1 的 A1–A3、A6、A7 與 5.1 的 B1 改寫成「每一步都寫明要填的值」；重讀 [S1-publisher]、[S1-publish]、[S13] 的對應段落。標「建議」的值是本文的建議，不是官方規定。
 
 ## 摘要
 
@@ -81,26 +82,62 @@
 
 ### 4.1 步驟
 
+**先看你要走哪條路線（A1–A9 不是每個人都要全做）：**
+
+| 路線 | 要做的步驟 | 需要 Azure subscription？ |
+|---|---|---|
+| **R1 手動上傳（沒有 Azure subscription 就走這條）** | A1 → A2 → A7（R1）；A3–A6 跳過；A8 選用 | 否（第 4.0 節表格）。A2 也不要求：2026-10-14 維護者在沒有 Azure subscription 的情況下建立 publisher 成功 |
+| R2 PAT | A1 → A2 → A3 → A4 → A5 → A6 → A7（R2） | 是：A3 新建 organization 需要 [S11] |
+| R3 Entra ID | A1 → A2 → A3 → A9 | 是 |
+| R4 `--oidc` | 後端尚未支援，無步驟可做 | — |
+
 **A1. 備妥 Microsoft 帳號**
 
-- 官方文件要求登入管理頁時使用「same Microsoft account」[S1-publisher]。
-- 做完後：能開啟 <https://marketplace.visualstudio.com/manage>（畫面需登入後確認）。
+- 準備一個 Microsoft 帳號。你用哪個帳號建立 publisher，之後就用同一個帳號管理它，請選會長期使用的。
+- 走 R2（PAT）時，建立 PAT（A4）與登入管理頁建立 publisher（A2）必須是**同一個**帳號。官方原文：「Log in with the same Microsoft account you used to create the Personal Access Token」[S1-publisher]。
+- 做完後：能開啟 <https://marketplace.visualstudio.com/manage> 並看到自己已登入（畫面需登入後確認）。
 - 未能驗證：能否直接用 GitHub 帳號登入管理頁（見第 10 節）。
 
 **A2. 建立 publisher**（R1–R4 都需要）
 
-1. 開啟 <https://marketplace.visualstudio.com/manage>，登入。
-2. 點 **Create publisher**（VS Code 文件 [S1-publisher]；Azure DevOps 文件寫成 **+ Create a publisher** [S13]，實際按鈕文字需登入後確認）。
-3. **ID** 填 `xsmbradpitt`：「the **unique** identifier for your publisher in Marketplace … ID cannot be changed once created」[S1-publisher]。
-4. **Name** 填顯示名稱：「the **unique** name of your publisher」[S1-publisher]；之後改名會撤銷 verified badge [S1-verify]。
-5. 閱讀 Marketplace Publisher Agreement 後點 **Create** [S13]（該文件針對 Azure DevOps 擴充套件，入口網址同為 marketplace.visualstudio.com/manage 系列，流程相同屬推論；VS Code 文件的步驟為 **Click Create** [S1-publisher]）。
-- 做完後：管理頁左側出現 publisher `xsmbradpitt`（畫面需登入後確認）。
-- 命名限制：官方文件只說明 ID 與 Name 必須唯一、ID 不可改 [S1-publisher]。`vsce` 在本機驗證 `publisher` 與 `name` 的格式為 `/^[a-z0-9][a-z0-9\-]*$/i` [S5-validation]；伺服器端是否有其他限制：未能驗證。`xsmbradpitt` 符合上述格式。
+建立畫面有兩個要填的欄位（ID 與 Name），其餘為選填。先看要填什麼：
+
+| 畫面欄位 | 填什麼 | 說明 |
+|---|---|---|
+| **ID** | `xsmbradpitt`（全小寫） | 官方：「the unique identifier for your publisher in Marketplace that will be used in your extension URLs」，且「ID cannot be changed once created」[S1-publisher]。它是擴充套件 ID 的前半段（`xsmbradpitt.interlinked-theme`），也是 `package.json` 的 `publisher` 值 |
+| **Name** | `xsmBradPitt`（建議） | 官方：「the unique name of your publisher that will be displayed in Marketplace with your extensions. This can be your company or brand name」[S1-publisher]。這是 Marketplace 顯示在每個擴充套件旁的**發布者名稱**，不是擴充套件的名稱（擴充套件名稱由 `package.json` 的 `name` / `displayName` 決定） |
+| 其餘欄位 | 留空 | 官方：「Optionally, fill out the rest of the fields」[S1-publisher]；官方文字沒有列出這些欄位的名稱（只有截圖） |
+
+Name 建議填 `xsmBradPitt` 的理由：publisher 是你的發布者身分，之後別的主題也掛在它底下，所以不用主題名；與 ID、GitHub 帳號用同一個名字，之後做 Open VSX 驗證（5.2）時最容易對照。想改成別的公司名或品牌名也可以；已知的條件是「唯一」與「16 字元以內」（見下方命名限制，伺服器端是否另有限制未能驗證）。
+
+步驟：
+
+1. 用 A1 的帳號開啟 <https://marketplace.visualstudio.com/manage/createpublisher?managePageRedirect=true>（Azure DevOps 文件給的建立入口 [S13]）並登入。若停在管理頁而不是建立畫面，點左側窗格的 **Create publisher**（VS Code 文件 [S1-publisher]；Azure DevOps 文件寫成 **+ Create a publisher** [S13]，實際按鈕文字需登入後確認）。
+2. **先填 Name**：`xsmBradPitt`。Azure DevOps 文件寫「the ID field autofills based on your entry」[S13]，所以 Name 填了之後 ID 才會被自動帶入。
+3. **再檢查 ID**：自動帶入的值若不是 `xsmbradpitt`，手動改成 `xsmbradpitt`（全小寫）。ID 建立後改不了，按 **Create** 前再核對一次。
+4. 其餘欄位留空。
+5. 閱讀 Marketplace Publisher Agreement，點 **Create** [S13][S1-publisher]。（[S13] 寫的是 Azure DevOps 擴充套件，但入口與表單同為 Visual Studio Marketplace 的 publisher 管理頁，與 [S1-publisher] 的步驟合併屬推論。）
+
+- 做完後（2026-10-14 實際畫面）：左側窗格列出 `xsmBradPitt`，右側標 **Owner**；右側標題為 `xsmBradPitt (xsmbradpitt)`，即 Name（ID）；分頁為 **Extensions**、**Details**、**Members**，旁邊有 **+ New extension** 下拉選單；Extensions 分頁是空的，顯示「It's lonely here! Upload an extension for this publisher.」與藍色的 **+ New extension** 按鈕。左側窗格另有 **+ Create publisher**（可再建別的 publisher，不需要）。走 R2 的話，可再用 A5 的 `verify-pat` 確認 PAT 對得上這個 publisher。
+- 命名限制：官方文件只說 ID 與 Name 必須唯一、ID 不可改 [S1-publisher]；Azure DevOps 文件另有備註「Ensure your publisher name is within 16 characters for multibyte characters」[S13]（語意不明確；`xsmBradPitt` 為 11 字元，兩種解讀都符合）。`vsce` 在本機驗證 `publisher` 與 `name` 的格式為 `/^[a-z0-9][a-z0-9\-]*$/i` [S5-validation]，`xsmbradpitt` 符合；伺服器端是否有其他限制：未能驗證。
+- 填錯時：
+  - ID 填錯：官方只說「cannot be changed」，補救方式官方文件未說明；所以按 **Create** 前再核對。
+  - Name 被占用：官方只說 Name 必須唯一，錯誤文字未能驗證。換一個 16 字元以內的名稱即可，ID 維持 `xsmbradpitt`。
+  - ID 被占用：擴充套件 ID 已定案為 `xsmbradpitt.interlinked-theme`，遇到時先停下來回報，不要自行換 ID。
+  - 之後想改 Name：做過 domain verification（A8）的話，改 Name 會撤銷 verified badge [S1-verify]；沒做過則不受影響。改 Name 的畫面位置需登入後確認。
+- 查證註記：2026-10-14 對 <https://marketplace.visualstudio.com/publishers/xsmbradpitt> 回 HTTP 404。這只代表該公開頁不存在，不能證明 ID 或 Name 沒被占用，以 **Create** 的結果為準。
 
 **A3.（僅 R2、R3）建立 Azure DevOps organization**
 
-1. VS Code 文件：「If you don't have an Azure DevOps organization yet, follow the steps in the Create an organization article」[S1-pat]。
-2. Create an organization 文件的 Prerequisites：「You need an active Azure subscription to create new organizations.」步驟為登入 Azure DevOps → **New organization** → 輸入名稱、hosting geography、選 Azure subscription（billing）→ **Continue** [S11]。可使用 personal Microsoft account、GitHub account 或 work/school account [S11]。
+已經有 Azure DevOps organization 的話跳過這步（VS Code 文件 [S1-pat]）。**沒有 Azure subscription 的話也跳過這步，改走 R1**（見 4.1 開頭的路線表）。沒有 organization 但有 subscription 的話：
+
+1. 前提：要有一個有效的 Azure subscription。官方原文：「You need an active Azure subscription to create new organizations. Existing organizations and free tier limits aren't affected.」[S11]（2026-10-14 重讀）。沒有 subscription 就無法完成這步。
+2. 開 <https://dev.azure.com> 登入。可用 personal Microsoft account、GitHub account 或 work/school account [S11]。
+3. 點 **New organization**，依序填 [S11]：
+   - organization 名稱：自訂（建議 `xsmbradpitt`；建議值，非官方規定）。官方規則：只能用英文字母、數字、連字號，以字母或數字開頭與結尾，少於 50 字元；違規會顯示「VS850015: The specified name is not allowed to be used」[S11]
+   - hosting geography：依所在地選（官方步驟只列出此欄位，沒有指定選哪個）
+   - 計費用的 Azure subscription：選前面備妥的那個
+4. 點 **Continue** [S11]。
 - 做完後：能登入 `https://dev.azure.com/{Your_Organization}` [S11]。
 - 未能驗證：取得 Azure subscription 是否一定要信用卡（社群使用者回報需要 [S15-1926]，屬線索）。
 
@@ -112,7 +149,7 @@
 2. 設定：
    - Name：任意（建議 `interlinked-vsce`）
    - Organization：**All accessible organizations**
-   - Expiration (optional)：自訂到期日（見下方「到期」）
+   - Expiration (optional)：建議選距今 30 天內的日期（建議值，非官方規定）。理由：全域 PAT 在 2026-12-01 一律失效 [S8]，PAT 只用在首次發布與 12-01 前的過渡，不需要放長（最長能設多久，官方文件未載明，見下方「到期」）
    - Scopes：**Custom defined** → 點 **Show all scopes** → 捲到 **Marketplace** → 勾 **Manage**
 3. 點 **Create**，複製 token 存進密碼管理器。
 - 做完後：畫面顯示新 token，之後不再顯示 [S1-pat][S9]。
@@ -135,12 +172,25 @@ npx @vscode/vsce verify-pat xsmbradpitt
 
 **A6. 存進 GitHub repo secret（僅 R2）**
 
-- 名稱 `VSCE_PAT`，依 [S2-gha] 連到的 GitHub 官方說明建立 repository secret（GitHub 自身文件不在本次來源範圍）。
-- CI 中以 `env: VSCE_PAT: ${{ secrets.VSCE_PAT }}` 傳入；`vsce publish` 預設讀取 `VSCE_PAT` [S2][S5-main]。
+名稱固定為 `VSCE_PAT`（`vsce publish` 預設讀這個環境變數 [S2][S5-main]）。在維護者本機執行：
+
+```bash
+gh auth status                                          # 確認 active 帳號是 xsmBradPitt
+gh secret set VSCE_PAT --repo xsmBradPitt/interlinked-theme
+```
+
+- 第二行沒帶 `--body` 時，`gh` 會出現互動提示讓你貼上 token，值不會進 shell history（`gh secret set --help` 的說明：「reads from standard input if not specified」，2026-10-14 本機查證）。
+- 想改放 GitHub environment secrets（第 6 節建議）：加 `--env <environment 名稱>`。
+- 做完後：`gh secret list --repo xsmBradPitt/interlinked-theme` 的清單裡有 `VSCE_PAT`。
+- CI 中以 `env: VSCE_PAT: ${{ secrets.VSCE_PAT }}` 傳入 [S2-gha]；GitHub 自身的 secrets 文件不在本次來源範圍。
 
 **A7. 發布第一版**
 
-- **R1（手動）**：本機或 CI 產出 `.vsix`（`vsce package` [S1]），到管理頁上傳 [S1-publish]。上傳入口的按鈕名稱需登入後確認（官方文件只有截圖）。
+- **R1（手動）**：
+  1. 在專案根目錄產出 `.vsix`：`npx @vscode/vsce package`。產物在專案根目錄，檔名形如 `interlinked-theme-<version>.vsix`（官方範例為 `my-extension-0.0.1.vsix`）[S1]。
+  2. 開 <https://marketplace.visualstudio.com/manage>，用 A1 的帳號登入，選到 publisher `xsmbradpitt`（Azure DevOps 文件：從頁面上方的下拉選單選 publisher [S13]）。
+  3. 點 publisher 頁面的 **+ New extension**（2026-10-14 實際畫面：頁籤列上的下拉選單，Extensions 分頁為空時中央另有同名的藍色按鈕），在下拉選單選 VS Code 對應的項目，再選取步驟 1 的 `.vsix`。VS Code 文件只寫「Upload that file on the … management page」並附截圖，沒有寫按鈕名稱 [S1-publish]；Azure DevOps 文件的對應操作是 **New extension** → 選擴充套件類型 → 拖放或選取 `.vsix` → **Upload** [S13]，與實際畫面的入口名稱一致。下拉選單內的項目名稱尚未觀察（2026-10-14 的畫面沒有展開）。
+  4. 上傳後等待驗證完成。Azure DevOps 文件寫明 Marketplace 對每個新增與更新的套件做病毒掃描，掃描通過前不會公開 [S13]；該段針對 Azure DevOps 擴充套件，VS Code 擴充套件是否相同屬推論。
 - **R2（PAT）**：`npx @vscode/vsce publish --packagePath <file>.vsix`（`--packagePath` 用法見 [S1] 的 platform-specific 段落；環境變數 `VSCE_PAT`）。
 - 做完後 CLI 會印出 `Publishing '<publisher>.<name> v<version>'...`、`Extension URL (might take a few minutes): …`、`Hub URL: …`、`Published … .` [S5-publish]。擴充套件頁面可能要幾分鐘才出現 [S5-publish]。
 - 重跑保護：`vsce publish --skip-duplicate`，版本已存在時只印 `Version <x> is already published. Skipping publish.` 並成功結束 [S5-publish]。
@@ -176,9 +226,22 @@ npx @vscode/vsce verify-pat xsmbradpitt
 
 **B1. 建立 Eclipse 帳號**
 
-- 網址：<https://accounts.eclipse.org/user/register> [S26]。
-- 2026-10-13 讀到的表單欄位：Email address、Username、First name、Last name、就業狀態（Work for an Eclipse Member Organization / Student / Self-employed / Other）、（適用時）Eclipse Member Organization、New Password、Confirm new password、Country、必勾的「I agree to the Eclipse.org Terms of Use, Privacy Policy and Code of Conduct.」、選填的 newsletter、captcha [S26]。
-- **GitHub username**：Open VSX wiki 寫「fill in the _GitHub Username_ field … use exactly the same GitHub account as when you log in to open-vsx.org」[S16]；FAQ 寫「include your GitHub username in the account information」[S24]。但上述註冊表單**沒有這個欄位**，所以應是註冊後在帳號 profile 補填，欄位位置需登入後確認（wiki 的描述已過時）。
+網址：<https://accounts.eclipse.org/user/register> [S26]。表單欄位為 2026-10-13 讀到的 [S26]，每欄填法如下：
+
+| 欄位 | 填什麼 |
+|---|---|
+| Email address | 你收得到信的信箱（驗證信相關細節需登入後確認） |
+| Username | 自訂。Open VSX 比對的是 profile 裡另外的 GitHub username 設定，不是這一欄 [S20-oauth] |
+| First name、Last name | 依實際資料 |
+| 就業狀態（四選一：Work for an Eclipse Member Organization / Student / Self-employed / Other） | 依實際情況選；官方來源沒有說這欄會影響發布（未能驗證） |
+| Eclipse Member Organization | 只在上一欄選 Work for an Eclipse Member Organization 時才會出現 |
+| New Password、Confirm new password | 自訂，兩欄相同 |
+| Country | 依實際資料 |
+| 「I agree to the Eclipse.org Terms of Use, Privacy Policy and Code of Conduct.」 | **必勾**，否則無法送出 |
+| newsletter | 選填，不勾也能完成 |
+| captcha | 照畫面完成 |
+
+- **GitHub username 要另外補填**：Open VSX wiki 寫「fill in the _GitHub Username_ field … use exactly the same GitHub account as when you log in to open-vsx.org」[S16]；FAQ 寫「include your GitHub username in the account information」[S24]。但上面的註冊表單**沒有這個欄位**（wiki 的描述已過時）。做法：註冊並登入 accounts.eclipse.org 後，進入編輯個人資料的頁面（頁面名稱與欄位位置需登入後確認），在 GitHub username 欄填 `xsmBradPitt`。找不到欄位時，B3 點 **Log in with Eclipse** 會出現「Your Eclipse profile is missing a GitHub username.」[S20-oauth]，那就代表這欄還沒補。
 - 這個值必須與你登入 open-vsx.org 的 GitHub 帳號（`xsmBradPitt`）相同，比對不分大小寫；缺值時錯誤為「Your Eclipse profile is missing a GitHub username.」，不符時為「The GitHub username setting in your Eclipse profile (…) does not match your GitHub authentication (…).」[S20-oauth]。
 - 不需要簽 Eclipse Contributor Agreement（ECA）[S16][S24]。
 - 做完後：能登入 accounts.eclipse.org（email 驗證等細節需登入後確認）。
@@ -375,6 +438,8 @@ npx ovsx publish "$VSIX" --skip-duplicate                          # env: OVSX_P
 
 ## 9. 與 spec 敘述不一致或需要更新之處
 
+> 2026-10-14：維護者定案 Marketplace 走 R1（手動上傳），spec 已據此更新（Solution 段、User Story 63 與 67、第 113、143、144 行）。下表的「現有敘述」是更新前的原文，保留作為依據。
+
 | spec 位置 | 現有敘述 | 查證結果 | 建議 |
 |---|---|---|---|
 | 第 142–143 行（帳號） | 「在 Marketplace 建立 publisher `xsmbradpitt`」 | 正確但不完整：需 Microsoft 帳號；PAT 路線需 Azure DevOps organization，新建需 Azure subscription [S11]；建立 publisher 時要同意 Marketplace Publisher Agreement [S13] | 補上前置帳務條件與認證路線選擇（本文 4.0 節） |
@@ -390,7 +455,7 @@ npx ovsx publish "$VSIX" --skip-duplicate                          # env: OVSX_P
 ## 10. 未能驗證項目
 
 1. **Marketplace PAT 的最長有效期限**：官方 PAT 文件與 REST API 文件均未載明數字 [S9][S14]；「max 1 year」僅見於社群使用者的 issue 文字 [S15-1422]，不採用。
-2. **建立 Marketplace publisher 是否強制要先有 Azure DevOps organization**，以及能否直接以 GitHub 帳號登入管理頁：官方文件順序是先 PAT 後 publisher [S1]，但未明說相依關係；需登入後確認。
+2. **建立 Marketplace publisher 是否強制要先有 Azure DevOps organization**：官方文件順序是先 PAT 後 publisher [S1]，但未明說相依關係。**2026-10-14 已實測**：維護者沒有 Azure subscription，用個人 Microsoft 帳號登入管理頁，直接建立 publisher 成功。（該帳號是否早已有 organization 未確認，但沒有 subscription 就無法新建，故可視為不需要。）**能否直接以 GitHub 帳號登入管理頁**仍未驗證。
 3. **PAT 建立畫面目前實際選項**：Azure DevOps 文件寫「select one organization」[S9]，VS Code 文件寫「All accessible organizations」並要 Marketplace → Manage [S1-pat]，社群回報找不到 Marketplace scope [S15-1926]；需登入後確認。
 4. **organization-scoped PAT 能否發布 Marketplace**：官方文件互相矛盾 [S1][S9]，issue 未獲答覆 [S15-2121]。
 5. **2026-12-01 期限是否延期**，以及 Marketplace trusted publishing 上線時程：Marketplace 團隊僅表示「working on」、無日期 [S15-2121][S6]。
@@ -405,6 +470,9 @@ npx ovsx publish "$VSIX" --skip-duplicate                          # env: OVSX_P
 14. **網頁上傳時自動建立的 namespace 大小寫**：wiki 只說「matching your GitHub ID」[S21]，行為未能驗證，故建議明確 `create-namespace`。
 15. **維護者是否擁有符合 domain verification 條件的網域**：未提供資訊 [S1-eligible]。
 16. **Marketplace 管理頁上傳 `.vsix` 的按鈕名稱、publisher 建立後頁面細節**：官方文件僅以截圖呈現，需登入後確認 [S1-publish]。
+17. **建立 publisher 畫面的「其餘選填欄位」名稱**，以及 **ID / Name 被占用時的錯誤文字**：官方文件只有截圖與「Optionally, fill out the rest of the fields」[S1-publisher]；需登入後確認。
+18. **`ID` 自動帶入的轉換規則**（例如是否自動轉小寫）：[S13] 只說「the ID field autofills based on your entry」，A2 因此要求填完 Name 後檢查 ID。
+19. **publisher 的 `name` 長度限制「within 16 characters for multibyte characters」的確切語意**：[S13] 的備註原文不明確。
 
 ---
 
@@ -418,8 +486,8 @@ npx ovsx publish "$VSIX" --skip-duplicate                          # env: OVSX_P
 |---|---|---|---|
 | S1 | Publishing Extensions \| Visual Studio Code Extension API | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension> | 同時讀 `microsoft/vscode-docs` 原始檔，`DateApproved: 10/7/2026` |
 | S1-pat | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#get-a-personal-access-token> | 錨點 |
-| S1-publisher | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#create-a-publisher> | 錨點 |
-| S1-publish | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-an-extension> | 錨點 |
+| S1-publisher | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#create-a-publisher> | 錨點；2026-10-14 重讀（ID / Name 說明、「Optionally, fill out the rest of the fields」） |
+| S1-publish | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#publish-an-extension> | 錨點；2026-10-14 重讀，手動上傳只有一句話加截圖，沒有按鈕名稱 |
 | S1-entra | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#secure-automated-publishing-to-visual-studio-marketplace> | 錨點 |
 | S1-verify | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#verify-a-publisher> | 錨點 |
 | S1-eligible | 同上 | <https://code.visualstudio.com/api/working-with-extensions/publishing-extension#eligible-domains> | 錨點 |
@@ -451,7 +519,7 @@ npx ovsx publish "$VSIX" --skip-duplicate                          # env: OVSX_P
 | S10 | Manage personal access tokens using policies - Azure DevOps \| Microsoft Learn | <https://learn.microsoft.com/azure/devops/organizations/accounts/manage-pats-with-policies-for-administrators> | `ms.date: 04/22/2026` |
 | S11 | Create an organization - Azure DevOps \| Microsoft Learn | <https://learn.microsoft.com/azure/devops/organizations/accounts/create-organization> | `ms.date: 03/03/2026` |
 | S12 | Authenticate to Azure DevOps with Microsoft Entra ID - Azure DevOps \| Microsoft Learn | <https://learn.microsoft.com/azure/devops/integrate/get-started/authentication/entra> | `ms.date: 09/18/2026`；背景，未直接引用 |
-| S13 | Package and publish extensions - Azure DevOps \| Microsoft Learn | <https://learn.microsoft.com/azure/devops/extend/publish/overview> | 含 `includes/create-publisher.md`；針對 Azure DevOps 擴充套件，發佈者入口相同 |
+| S13 | Package and publish extensions - Azure DevOps \| Microsoft Learn | <https://learn.microsoft.com/azure/devops/extend/publish/overview> | 含 `includes/create-publisher.md`；針對 Azure DevOps 擴充套件，發佈者入口相同；2026-10-14 重讀（`ms.date: 2026-04-03`）：建立入口 `…/manage/createpublisher?managePageRedirect=true`、「ID field autofills」、16 字元備註、範例 `mycompany-myteam` / `My Team` |
 | S14 | Pats - Create - REST API (Azure DevOps Tokens) \| Microsoft Learn | <https://learn.microsoft.com/en-us/rest/api/azure/devops/tokens/pats/create?view=azure-devops-rest-7.1> | `validTo` 無最大值說明 |
 | S15-2121 | Support publishing extensions with organization-scoped PATs due to global PATs being retired · Issue #2121 · microsoft/vsmarketplace | <https://github.com/microsoft/vsmarketplace/issues/2121> | 2026-09-14 留言（他人留言稱其屬 Marketplace 團隊）：「It's not complete yet. We are still actively working on it.」 |
 | S15-1422 | Trusted Publishing for extensions · Issue #1422 · microsoft/vsmarketplace | <https://github.com/microsoft/vsmarketplace/issues/1422> | 含社群 Entra + GitHub Actions 指南（線索） |
