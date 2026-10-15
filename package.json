@@ -1,0 +1,26 @@
+{
+  "name": "interlinked-theme",
+  "displayName": "Interlinked — Blade Runner 2049 inspired",
+  "description": "A dark teal terminal-glow theme inspired by Blade Runner 2049, adapted from the Zed theme by Takk8IS.",
+  "version": "1.0.0",
+  "publisher": "xsmbradpitt",
+  "license": "MIT",
+  "engines": { "vscode": "^1.75.0" },
+  "categories": ["Themes"],
+  "keywords": ["blade runner", "cyberpunk", "teal", "dark", "terminal", "theme"],
+  "icon": "icon.png",
+  "galleryBanner": { "color": "#001313", "theme": "dark" },
+  "repository": { "type": "git", "url": "https://github.com/xsmBradPitt/interlinked-theme.git" },
+  "bugs": { "url": "https://github.com/xsmBradPitt/interlinked-theme/issues" },
+  "homepage": "https://github.com/xsmBradPitt/interlinked-theme#readme",
+  "contributes": {
+    "themes": [
+      { "label": "Interlinked", "uiTheme": "vs-dark", "path": "./themes/interlinked-color-theme.json" }
+    ]
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "vscode:prepublish": "node scripts/build.mjs"
+  }
+}
