@@ -1,0 +1,32 @@
+// test/required-scopes.mjs — 資料。每個 scope 都必須被某條規則覆蓋（前綴比對，與 TextMate 一致）。
+// 這份清單是「我們預期會遇到的 scope」；Task 12 目視時發現漏的，先加在這裡（先紅），再補規則。
+export const REQUIRED_SCOPES = {
+  generic: [
+    'comment', 'comment.block.documentation', 'string', 'constant.numeric', 'constant.language.boolean',
+    'constant.character.escape', 'string.regexp', 'keyword.control', 'keyword.operator', 'storage.type',
+    'storage.modifier', 'entity.name.function', 'entity.name.type', 'entity.name.class',
+    'variable.parameter', 'variable.language', 'variable.other.property', 'meta.decorator',
+    'punctuation.definition.string', 'invalid',
+  ],
+  typescript: ['support.type.primitive.ts', 'punctuation.definition.template-expression.begin.ts', 'meta.decorator.ts'],
+  csharp: ['entity.name.type.class.cs', 'entity.name.function.cs', 'entity.name.variable.parameter.cs',
+    'entity.name.variable.property.cs', 'keyword.other.using.cs', 'storage.modifier.cs'],
+  java: ['storage.type.annotation.java', 'entity.name.type.class.java', 'entity.name.function.java',
+    'storage.modifier.java'],
+  kotlin: ['keyword.hard.kotlin', 'keyword.soft.kotlin', 'entity.name.function.kotlin', 'entity.name.type.kotlin'],
+  html: ['entity.name.tag.html', 'entity.other.attribute-name.html', 'string.quoted.double.html',
+    'punctuation.definition.tag.begin.html'],
+  css: ['entity.name.tag.css', 'entity.other.attribute-name.class.css', 'support.type.property-name.css',
+    'support.constant.property-value.css', 'keyword.other.unit.css', 'constant.other.color.rgb-value.hex.css'],
+  sql: ['keyword.other.DML.sql', 'storage.type.sql', 'support.function.aggregate.sql', 'string.quoted.single.sql',
+    'constant.numeric.sql'],
+  shell: ['variable.other.normal.shell', 'entity.name.command.shell', 'string.quoted.double.shell',
+    'keyword.control.shell', 'support.function.builtin.shell'],
+  json: ['support.type.property-name.json', 'string.quoted.double.json', 'constant.numeric.json',
+    'constant.language.json'],
+  yaml: ['entity.name.tag.yaml', 'string.quoted.double.yaml', 'comment.line.number-sign.yaml',
+    'entity.name.type.anchor.yaml'],
+  markdown: ['markup.heading.markdown', 'markup.bold.markdown', 'markup.italic.markdown',
+    'markup.underline.link.markdown', 'markup.inline.raw.string.markdown', 'markup.fenced_code.block.markdown',
+    'punctuation.definition.list.begin.markdown'],
+};

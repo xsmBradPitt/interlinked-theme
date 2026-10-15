@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run build
+      - name: Generated theme is committed and in sync
+        run: git diff --exit-code -- themes/
+      - name: Package smoke test
+        run: |
+          npx --yes @vscode/vsce package --no-dependencies -o interlinked-theme.vsix
+          node scripts/check-vsix.mjs interlinked-theme.vsix

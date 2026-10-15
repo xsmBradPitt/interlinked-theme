@@ -1,0 +1,23 @@
+/* Interlinked sample — CSS */
+:root {
+  --glow: #00ffe5;
+  --bg: rgb(0 31 31);
+}
+
+body.dark #app > .card:hover {
+  color: var(--glow);
+  background-color: var(--bg);
+  margin: 0 auto 1.5rem;
+  padding: 12px 2em;
+  font-family: "Fira Code", monospace;
+  border: 1px solid #00cc9980;
+}
+
+.card::before {
+  content: "\2192";
+  opacity: 0.8;
+}
+
+@media (max-width: 600px) {
+  .card { display: none; }
+}

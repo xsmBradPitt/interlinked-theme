@@ -1,0 +1,15 @@
+.claude/**
+.github/**
+.gitignore
+.superpowers/**
+CLAUDE.md
+CONTEXT.md
+docs/**
+images/**
+prototype/**
+reference/**
+samples/**
+scripts/**
+src/**
+test/**
+*.vsix

@@ -1,0 +1,87 @@
+// src/theme/controls.mjs
+import { withAlpha as a } from '../color.mjs';
+import { ALPHA, tints } from './shared.mjs';
+
+export function controlsColors(p) {
+  const t = tints(p);
+  return {
+    // lists / trees：hover、selection、focus、inactive selection 四種狀態彼此不同（spec 故事 28）
+    'list.activeSelectionBackground': t.activeBg,
+    'list.activeSelectionForeground': p.fg,
+    'list.inactiveSelectionBackground': p.bgRaised,
+    'list.inactiveSelectionForeground': p.fg,
+    'list.hoverBackground': a(p.tealBright, ALPHA.faint),
+    'list.hoverForeground': p.fg,
+    'list.focusBackground': t.activeBg,
+    'list.focusForeground': p.fg,
+    'list.focusOutline': p.tealBright,
+    'list.highlightForeground': p.tealBright,
+    'list.focusHighlightForeground': p.tealBright,
+    'list.dropBackground': t.activeBg,
+    'list.errorForeground': p.coral,
+    'list.warningForeground': p.lemon,
+    'list.invalidItemForeground': p.coral,
+    'list.deemphasizedForeground': p.fgMuted,
+    'list.filterMatchBackground': a(p.amber, ALPHA.find),
+    'listFilterWidget.background': p.bgRaised,
+    'listFilterWidget.outline': p.tealBright,
+    'listFilterWidget.noMatchesOutline': p.coral,
+    'tree.indentGuidesStroke': t.border,
+    'tree.inactiveIndentGuidesStroke': a(p.fg, ALPHA.guide),
+
+    // input / dropdown / checkbox / button
+    'input.background': p.bgChrome,
+    'input.foreground': p.fg,
+    'input.border': t.border,
+    'input.placeholderForeground': t.textDim,
+    'inputOption.activeBackground': t.activeBg,
+    'inputOption.activeBorder': p.tealBright,
+    'inputOption.activeForeground': p.fg,
+    'inputValidation.errorBackground': p.bgRemoved,
+    'inputValidation.errorBorder': p.coral,
+    'inputValidation.errorForeground': p.fg,
+    'inputValidation.warningBackground': p.bgRaised,
+    'inputValidation.warningBorder': p.lemon,
+    'inputValidation.warningForeground': p.fg,
+    'inputValidation.infoBackground': p.bgRaised,
+    'inputValidation.infoBorder': p.aqua,
+    'inputValidation.infoForeground': p.fg,
+    'dropdown.background': p.bgChrome,
+    'dropdown.foreground': p.fg,
+    'dropdown.border': t.border,
+    'dropdown.listBackground': p.bgRaised,
+    'checkbox.background': p.bgChrome,
+    'checkbox.foreground': p.fg,
+    'checkbox.border': t.borderStrong,
+    'button.background': p.teal,
+    'button.foreground': p.bgChrome,
+    'button.hoverBackground': p.springGreen,
+    'button.border': t.none,
+    'button.secondaryBackground': p.bgRaised,
+    'button.secondaryForeground': p.fg,
+    'button.secondaryHoverBackground': t.activeBg,
+
+    // quick input / command palette
+    'quickInput.background': p.bgRaised,
+    'quickInput.foreground': p.fg,
+    'quickInputTitle.background': p.bgSide,
+    'quickInputList.focusBackground': t.activeBg,
+    'quickInputList.focusForeground': p.fg,
+    'quickInputList.focusIconForeground': p.tealBright,
+    'pickerGroup.foreground': p.tealBright,
+    'pickerGroup.border': t.border,
+
+    // notifications
+    'notifications.background': p.bgRaised,
+    'notifications.foreground': p.fg,
+    'notifications.border': t.borderStrong,
+    'notificationCenter.border': t.borderStrong,
+    'notificationCenterHeader.background': p.bgSide,
+    'notificationCenterHeader.foreground': p.fg,
+    'notificationToast.border': p.tealBright,
+    'notificationLink.foreground': p.aquamarine,
+    'notificationsErrorIcon.foreground': p.coral,
+    'notificationsWarningIcon.foreground': p.lemon,
+    'notificationsInfoIcon.foreground': p.aqua,
+  };
+}

@@ -1,0 +1,21 @@
+{
+  "name": "interlinked",
+  "version": 1.0,
+  "dark": true,
+  "colors": {
+    "editor": {
+      "background": "#001F1F",
+      "foreground": "#FFE5B4",
+      "cursor": {
+        "color": "#00FFB7",
+        "blink": false,
+        "width": 2
+      }
+    },
+    "terminal": {
+      "ansi": ["#21222C", "#FFD700", "#1AFFA3"],
+      "background": null
+    }
+  },
+  "tags": ["teal", "cyberpunk"]
+}
