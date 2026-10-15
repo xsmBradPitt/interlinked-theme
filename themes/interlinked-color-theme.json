@@ -1,0 +1,9 @@
+{
+  "$schema": "vscode://schemas/color-theme",
+  "name": "Interlinked",
+  "type": "dark",
+  "semanticHighlighting": true,
+  "colors": {},
+  "tokenColors": [],
+  "semanticTokenColors": {}
+}
