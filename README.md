@@ -4,14 +4,16 @@ A dark teal terminal-glow theme for VS Code and Cursor, inspired by *Blade Runne
 from the Zed theme by Takk8IS. Deep teal-black surfaces, glowing mint and aquamarine text, and amber
 used sparingly as an accent.
 
+![TypeScript with the side bar](https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/images/typescript-sidebar.png)
+![Markdown](https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/images/markdown.png)
+
 ## Install
 
 - **VS Code** — search for "Interlinked" in the Extensions view, or install
   [`xsmbradpitt.interlinked-theme`](https://marketplace.visualstudio.com/items?itemName=xsmbradpitt.interlinked-theme)
   from the Visual Studio Marketplace.
-- **Cursor** — Cursor installs extensions from Open VSX. Search for "Interlinked" in the Extensions
-  panel, or open
-  [`xsmbradpitt/interlinked-theme`](https://open-vsx.org/extension/xsmbradpitt/interlinked-theme).
+- **Cursor** — Cursor installs extensions from Open VSX, where Interlinked is not listed yet.
+  Until it is, install the `.vsix` manually (see below).
 - **Manually** — download the `.vsix` from
   [GitHub Releases](https://github.com/xsmBradPitt/interlinked-theme/releases), then run
   `Extensions: Install from VSIX...` from the Command Palette.
