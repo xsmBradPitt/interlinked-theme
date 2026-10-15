@@ -22,3 +22,18 @@ test('italic is used only where the Reference Theme uses it', () => {
     .sort();
   assert.deepEqual(italic, ['emphasis', 'variable.special']);
 });
+
+test('semantic tokens cover the core types and the defaultLibrary / readonly cues', () => {
+  const keys = Object.keys(theme.semanticTokenColors);
+  for (const k of ['function', 'type', 'variable', 'property', 'parameter', 'enumMember',
+    'variable.readonly', 'variable.defaultLibrary']) {
+    assert.ok(keys.includes(k), `semanticTokenColors.${k} is missing`);
+  }
+});
+
+test('semantic italic is limited to defaultLibrary variables', () => {
+  const italic = Object.entries(theme.semanticTokenColors)
+    .filter(([, v]) => typeof v === 'object' && v.italic)
+    .map(([k]) => k);
+  assert.deepEqual(italic, ['variable.defaultLibrary']);
+});
