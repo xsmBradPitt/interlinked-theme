@@ -14,7 +14,7 @@ export function editorColors(p) {
     'editor.inactiveSelectionBackground': a(p.mint, ALPHA.faint),
     'editor.selectionHighlightBackground': a(p.mint, ALPHA.faint),
     'editor.wordHighlightBackground': a(p.tealBright, ALPHA.read),
-    'editor.wordHighlightStrongBackground': p.bgRaised,
+    'editor.wordHighlightStrongBackground': a(p.amber, ALPHA.read),   // 寫入處；與讀取處（teal）色相不同、且看得見
     'editor.findMatchBackground': a(p.amber, ALPHA.find),
     'editor.findMatchHighlightBackground': a(p.amber, ALPHA.findDim),
     'editor.findRangeHighlightBackground': a(p.tealBright, ALPHA.faint),

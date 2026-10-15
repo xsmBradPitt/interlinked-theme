@@ -19,7 +19,8 @@ export function editorExtrasColors(p) {
     'minimapGutter.deletedBackground': p.coral,
 
     // scrollbar（Reference scrollbar.thumb）
-    'scrollbar.shadow': t.none,
+    // VS Code 的 sticky scroll 陰影預設取自 scrollbar.shadow；全透明會讓釘住的行融進編輯區。
+    'scrollbar.shadow': p.bgChrome,
     'scrollbarSlider.background': a(p.tealBright, ALPHA.strong),
     'scrollbarSlider.hoverBackground': p.tealBright,
     'scrollbarSlider.activeBackground': p.tealBright,

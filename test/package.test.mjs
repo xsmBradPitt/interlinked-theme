@@ -54,10 +54,21 @@ test('README images are absolute https URLs and not SVG (badges excepted)', () =
   assert.deepEqual(bad, []);
 });
 
+// 最終審查補充：URL 形式正確不代表檔案存在；指向本 repo 的圖片必須真的在 repo 裡，否則市集頁與 GitHub 首頁是破圖。
+test('README images that point into this repo resolve to files that exist', () => {
+  const md = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
+  const prefix = 'https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/';
+  const missing = [...md.matchAll(/!\[[^\]]*\]\(([^)\s]+)/g)].map(m => m[1])
+    .filter(u => u.startsWith(prefix))
+    .map(u => u.slice(prefix.length).split('?')[0])
+    .filter(rel => !existsSync(new URL(`../${rel}`, import.meta.url)));
+  assert.deepEqual(missing, []);
+});
+
 test('README credits the upstream author, repo and both stated licences', () => {
   const md = readFileSync(new URL('../README.md', import.meta.url), 'utf8');
   for (const s of ['David C Cavalcante', 'Takk', 'https://github.com/Takk8IS/blade-runner-2049-theme-for-zed',
-    'MIT', 'CC BY 4.0']) {
+    'MIT', 'CC BY 4.0', 'https://creativecommons.org/licenses/by/4.0/']) {
     assert.ok(md.includes(s), `README is missing: ${s}`);
   }
 });

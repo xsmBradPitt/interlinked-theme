@@ -4,11 +4,6 @@ A dark teal terminal-glow theme for VS Code and Cursor, inspired by *Blade Runne
 from the Zed theme by Takk8IS. Deep teal-black surfaces, glowing mint and aquamarine text, and amber
 used sparingly as an accent.
 
-![TypeScript with the side bar](https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/images/typescript-sidebar.png)
-![Terminal with git diff](https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/images/terminal-git-diff.png)
-![Markdown](https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/images/markdown.png)
-![Cursor](https://raw.githubusercontent.com/xsmBradPitt/interlinked-theme/main/images/cursor.png)
-
 ## Install
 
 - **VS Code** — search for "Interlinked" in the Extensions view, or install
@@ -55,5 +50,6 @@ Interlinked is a modified adaptation, as a VS Code theme, of the Zed theme
 by David C Cavalcante / Takk™ Innovate Studio.
 
 The upstream project states two licences: MIT (see `LICENSE`, which retains
-`Copyright (c) 2024 Takk8IS`) and CC BY 4.0. This adaptation changes the original colour
-specification into a VS Code theme and is released under MIT.
+`Copyright (c) 2024 Takk8IS`) and [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
+This adaptation changes the original colour specification into a VS Code theme and is released
+under MIT.
