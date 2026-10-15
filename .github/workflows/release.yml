@@ -1,0 +1,40 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm test
+      - run: npm run build
+      - name: Tag matches manifest version
+        run: test "v$(node -p "require('./package.json').version")" = "${GITHUB_REF_NAME}"
+      - name: Package
+        id: pkg
+        run: |
+          npx --yes @vscode/vsce package --no-dependencies
+          VSIX="$(ls interlinked-theme-*.vsix)"
+          node scripts/check-vsix.mjs "$VSIX"
+          echo "vsix=$VSIX" >> "$GITHUB_OUTPUT"
+      # 先建 Release：維護者從這裡下載同一個 .vsix 手動上傳 Marketplace。重跑時已存在就跳過。
+      - name: GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
+            || gh release create "$GITHUB_REF_NAME" "${{ steps.pkg.outputs.vsix }}" \
+                 --title "$GITHUB_REF_NAME" --generate-notes
+      # 首次發布：Marketplace 手動上傳 → Open VSX namespace claim `granted` → 才把
+      # repo variable OPEN_VSX_PUBLISH 設成 true 並重跑此 workflow。
+      - name: Publish to Open VSX
+        if: ${{ vars.OPEN_VSX_PUBLISH == 'true' }}
+        env:
+          OVSX_PAT: ${{ secrets.OVSX_PAT }}
+        run: npx --yes ovsx publish "${{ steps.pkg.outputs.vsix }}" --skip-duplicate
