@@ -6,6 +6,7 @@
 > 「需登入後確認」＝ 該畫面要登入才看得到，公開來源無法驗證，文件不編造 UI 文字。
 > 命令、網址、scope 名稱逐字抄自來源；範例一律用 `<YOUR_TOKEN>` 佔位符，不含任何真實 token。
 > 修訂（2026-10-14）：4.1 的 A1–A3、A6、A7 與 5.1 的 B1 改寫成「每一步都寫明要填的值」；重讀 [S1-publisher]、[S1-publish]、[S13] 的對應段落。標「建議」的值是本文的建議，不是官方規定。
+> 執行結果（2026-10-29）：v1.0.0 已在兩個市集。Open VSX 頁面 <https://open-vsx.org/extension/xsmbradpitt/interlinked-theme>，API 回 `downloadable: true`、`verified: true`。claim 為 [EclipseFdn/open-vsx.org#14795](https://github.com/EclipseFdn/open-vsx.org/issues/14795)，`granted` 後才本機發布 GitHub Release 的 `interlinked-theme-1.0.0.vsix`，不是 CI。`OVSX_PAT` 不在 repo secrets，`OPEN_VSX_PUBLISH` 未設，trusted publishing 尚未註冊。Eclipse 的 GitHub 連結在個人資料左側 **Link GitHub Account**（狀態 Connected as `xsmBradPitt`）。Open VSX 個人頁的簽署按鈕是 **Review & sign**。`ovsx create-namespace` 成功訊息為 `Created namespace xsmbradpitt`；`ovsx publish` 成功訊息為 `Published xsmbradpitt.interlinked-theme v1.0.0`。
 
 ## 摘要
 

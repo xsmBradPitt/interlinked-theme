@@ -2175,8 +2175,9 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
             || gh release create "$GITHUB_REF_NAME" "${{ steps.pkg.outputs.vsix }}" \
                  --title "$GITHUB_REF_NAME" --generate-notes
-      # 首次發布：Marketplace 手動上傳 → Open VSX namespace claim `granted` → 才把
-      # repo variable OPEN_VSX_PUBLISH 設成 true 並重跑此 workflow。
+      # v1.0.0 已於 2026-10-29 本機發布到 Open VSX，不要為了補發而重跑。
+      # 下一個版本要讓這步生效：設 repo secret OVSX_PAT 與 variable OPEN_VSX_PUBLISH=true，
+      # 或改 trusted publishing（見研究文件 B8）。
       - name: Publish to Open VSX
         if: ${{ vars.OPEN_VSX_PUBLISH == 'true' }}
         env:
@@ -2202,13 +2203,13 @@ Expected: GitHub Actions 的 CI 全綠。（推送屬對外操作，執行前先
 
 ## 本計畫之外：首次發布（`CLAUDE.md` 待辦第 7 項）
 
-實作完成並合併後，依序執行，**順序是硬性的**（研究文件第 3 節）：
+實作完成並合併後，依序執行，**順序是硬性的**（研究文件第 3 節）。2026-10-29 的結果：
 
-1. 把 `package.json` 的 `version` 與 `CHANGELOG.md` 對齊，推 `v1.0.0` tag → CI 打包並建立 GitHub Release（此時 `OPEN_VSX_PUBLISH` 未設定，不會碰 Open VSX）。
-2. 從 GitHub Release 下載 `.vsix`，手動上傳到 Marketplace 管理頁。
-3. 完成 Open VSX 的 B1–B5（Eclipse 帳號、Publisher Agreement、token、`create-namespace xsmbradpitt`），開 namespace claim issue（Option 1）。
-4. `granted` 後：設定 repo secret `OVSX_PAT`、repo variable `OPEN_VSX_PUBLISH=true`，重跑 release workflow。
-5. 穩定後依研究文件 B8 遷移到 trusted publishing，刪除 `OVSX_PAT`。
+1. ~~把 `package.json` 的 `version` 與 `CHANGELOG.md` 對齊，推 `v1.0.0` tag → CI 打包並建立 GitHub Release（此時 `OPEN_VSX_PUBLISH` 未設定，不會碰 Open VSX）。~~ 已完成（2026-10-15）。
+2. ~~從 GitHub Release 下載 `.vsix`，手動上傳到 Marketplace 管理頁。~~ 已完成（2026-10-15）。
+3. ~~完成 Open VSX 的 B1–B5（Eclipse 帳號、Publisher Agreement、token、`create-namespace xsmbradpitt`），開 namespace claim issue（Option 1）。~~ 已完成。claim：[EclipseFdn/open-vsx.org#14795](https://github.com/EclipseFdn/open-vsx.org/issues/14795)，2026-10-29 `granted`。
+4. `granted` 之後的發布沒有走「設定 `OVSX_PAT`、`OPEN_VSX_PUBLISH=true`、重跑 workflow」。v1.0.0 是維護者本機 `ovsx publish` 同一份 Release `.vsix`（2026-10-29）。CI 這條仍待下一個版本：secret 與 variable 都還沒設。不要為了補發 1.0.0 去重跑 workflow。
+5. 穩定後依研究文件 B8 遷移到 trusted publishing。owner 與 active 版本都已有，這條可以做；做完才刪 token。目前 token 只在維護者本機，repo 裡沒有 `OVSX_PAT`。
 
 ---
 

@@ -9,8 +9,9 @@
 - `docs/adr/`：已定案、不要「順手修正」的決策
 - `reference/`：上游 Zed 主題原樣保存，是配色規格。不要修改，也不要打包進 `.vsix`
 
-## 目前狀態（2026-10-15）
-- **v1.0.0 已發布到 VS Code Marketplace**（2026-10-15，手動上傳）：<https://marketplace.visualstudio.com/items?itemName=xsmbradpitt.interlinked-theme>。搜尋、下載、安裝都已驗證（安裝來源 `gallery`）。**Open VSX 尚未發布**，所以 Cursor 目前只能裝 GitHub Release 的 `.vsix`（README 已照實說明）。
+## 目前狀態（2026-10-29）
+- **v1.0.0 已發布到 VS Code Marketplace**（2026-10-15，手動上傳）：<https://marketplace.visualstudio.com/items?itemName=xsmbradpitt.interlinked-theme>。搜尋、下載、安裝都已驗證（安裝來源 `gallery`）。
+- **v1.0.0 已發布到 Open VSX**（2026-10-29，本機 `ovsx publish` 同一個 GitHub Release `.vsix`）：<https://open-vsx.org/extension/xsmbradpitt/interlinked-theme>。API 回 `version` `1.0.0`、`downloadable: true`、`verified: true`。namespace `xsmbradpitt` 的擁有權申請是 [EclipseFdn/open-vsx.org#14795](https://github.com/EclipseFdn/open-vsx.org/issues/14795)，已關閉並標 `granted`。這次沒有走 CI：repo 沒有 `OVSX_PAT`，`OPEN_VSX_PUBLISH` 也沒設。通行碼說明是 `interlinked-ci`，只在維護者本機，約 90 天到期（建立日 2026-10-27，以 tokens 頁 Expires 為準）。repo 裡的 README 已改成 Open VSX 安裝說明；已上架的 1.0.0 套件內仍是舊句「Open VSX 尚未列出」，要等下一個版本才會換。
 - 實作已合併：PR #1 → `main`（`d19a54e`），tag `v1.0.0`，GitHub Release 附 `interlinked-theme-1.0.0.vsix`。測試 68 項；`main`、tag `v1.0.0`、PR 分支上的 CI 與 Release workflow 都是 success。
 - 目視驗證（計畫 Task 12）：VS Code 的 11 個 Sample 與各 UI Area、Cursor 畫面都已由維護者看過，初步通過。維護者覺得「樣式偏少」，微調留待之後（見下方「待補」）。
 - Cursor 的 VS Code 基底版本（2026-10-15 查）：Cursor 3.24.18 → `1.128.0`；`engines.vscode` 是 `^1.75.0`，滿足 D9。
@@ -27,9 +28,9 @@
 2. ~~`gh` 切到 `xsmBradPitt`。~~ 已完成（2026-10-13）。`gh` 原本只登入了 `xsmJohnnyDepp`，`gh auth switch` 無處可切，是用 `gh auth login --scopes workflow` 另外登入 `xsmBradPitt`。
 3. ~~建立 GitHub repo `xsmBradPitt/interlinked-theme`。~~ 已完成（2026-10-13，對外操作需先取得使用者確認）。**待做**：把 spec 開成帶有 `ready-for-agent` 標籤的 issue（label 也還沒建）。
 4. ~~在 VS Code Marketplace 和 Open VSX 搜尋 `interlinked`，確認沒有撞名。~~ 已完成（2026-10-13），結果見上方「目前狀態」。
-5. 使用者本人註冊。~~Marketplace publisher `xsmbradpitt`~~ 已完成（2026-10-14）。**待做**：Open VSX 用 Eclipse 帳號簽 Publisher Agreement，建立 namespace `xsmbradpitt` 並申請驗證。操作步驟見 `docs/research/0001-marketplace-and-open-vsx-publishing.md` 第 5 節；B1–B3（帳號與協議）可先做，B4–B5（token 與建立 namespace）建議接近首次發布再做，因為正式環境的 token 約 90 天到期。
+5. ~~使用者本人註冊。~~ Marketplace publisher `xsmbradpitt` 已完成（2026-10-14）。Open VSX 已完成（2026-10-27）：Eclipse 帳號、GitHub 連成 `xsmBradPitt`、Publisher Agreement、namespace `xsmbradpitt`、claim issue。`granted` 於 2026-10-29。
 6. ~~依 spec 開始實作。~~ 已完成（2026-10-15）：PR #1 合併進 `main`。底色決策（2026-10-14）選定「疊在黑底上」，chrome `#001313`、tab bar `#002022`，見 spec「底色決策」。
-7. 首次發布：~~`vsce package` 產出 `.vsix` → 手動上傳 Marketplace~~ 已完成（2026-10-15）。**待做**：開 Open VSX 的 namespace claim issue → `granted` 後設定 repo secret `OVSX_PAT` 與 repo variable `OPEN_VSX_PUBLISH=true`，重跑 release workflow（`release.yml` 在該變數為 `true` 時才會發布 Open VSX）。順序是硬性的，原因見研究文件第 3 節。發布後把 README 的 Cursor 安裝說明改回 Open VSX 連結。
+7. ~~首次發布。~~ Marketplace 手動上傳已完成（2026-10-15）。Open VSX 1.0.0 已於 2026-10-29 本機手動發布，README 的 Cursor 安裝說明已改。**待做（下一個版本的 CI）**：`release.yml` 仍只在 `OPEN_VSX_PUBLISH=true` 且有 `OVSX_PAT` 時才發布 Open VSX，這兩項都還沒設。要接上 CI，就設定 secret 與 variable，或改走 trusted publishing（研究文件 B8；namespace owner 與 active 版本都已有）。不要為了 1.0.0 重跑 workflow。
 8. **待補（v1.0.1 起；依下方分類，沒有先後順序）**
    - **補截圖**（README 打包在 `.vsix` 裡，所以補圖要升版並再手動上傳一次 Marketplace）：
      - `images/terminal-git-diff.png`：第一版拍到的 `git diff` 沒有輸出（工作樹乾淨）。重拍請讓它有 diff 輸出，例如 `git diff HEAD~1 -- src/theme/editor.mjs`，並最好同時看得到 ANSI 顏色。
@@ -59,4 +60,4 @@
 - 產生物 `themes/interlinked-color-theme.json` 進 git；改了 Palette 或規則後要 `npm run build` 並一起 commit，CI 會檢查同步。
 - README 的圖片一律用 https 絕對網址；指向本 repo `images/` 的圖片必須真的存在（有測試擋）。
 - 打包一律用 `npx --yes @vscode/vsce package --no-dependencies`；`vsce` 讀檔案系統而不是 `.gitignore`，本機工具資料夾（`.claude/`、`.superpowers/`）要在 `.vscodeignore` 排除。打包後用 `node scripts/check-vsix.mjs <vsix>` 檢查。
-- 發布備忘：推 `v*` tag → `release.yml` 建 GitHub Release 並附 `.vsix` → 維護者下載同一個檔案手動上傳 Marketplace。通過驗證後仍要等數分鐘才會在各節點查得到（v1.0.0 實測：發布約 4 分鐘時 `code --install-extension` 回「not found」、頁面 404，約 6 分鐘後正常），剛發布查不到屬正常，稍等重試。市集會重新封裝 `.vsix`，檔案雜湊與 Release 的不同，內容相同。
+- 發布備忘：推 `v*` tag → `release.yml` 建 GitHub Release 並附 `.vsix` → 維護者下載同一個檔案手動上傳 Marketplace。Open VSX 的 CI 步驟預設關閉；v1.0.0 是 `granted` 之後本機發布的。通過驗證後仍要等數分鐘才會在各節點查得到（Marketplace v1.0.0 實測：發布約 4 分鐘時 `code --install-extension` 回「not found」、頁面 404，約 6 分鐘後正常），剛發布查不到屬正常，稍等重試。市集會重新封裝 `.vsix`，檔案雜湊與 Release 的不同，內容相同。Cursor 搜尋還要再等它自己的市集同步。
