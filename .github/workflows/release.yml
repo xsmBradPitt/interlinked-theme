@@ -31,8 +31,9 @@ jobs:
           gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1 \
             || gh release create "$GITHUB_REF_NAME" "${{ steps.pkg.outputs.vsix }}" \
                  --title "$GITHUB_REF_NAME" --generate-notes
-      # 首次發布：Marketplace 手動上傳 → Open VSX namespace claim `granted` → 才把
-      # repo variable OPEN_VSX_PUBLISH 設成 true 並重跑此 workflow。
+      # v1.0.0 已於 2026-10-29 本機發布到 Open VSX，不要為了補發而重跑。
+      # 下一個版本要讓這步生效：設 repo secret OVSX_PAT 與 variable OPEN_VSX_PUBLISH=true，
+      # 或改 trusted publishing（見研究文件 B8）。
       - name: Publish to Open VSX
         if: ${{ vars.OPEN_VSX_PUBLISH == 'true' }}
         env:

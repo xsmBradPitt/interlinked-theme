@@ -12,8 +12,8 @@ used sparingly as an accent.
 - **VS Code** — search for "Interlinked" in the Extensions view, or install
   [`xsmbradpitt.interlinked-theme`](https://marketplace.visualstudio.com/items?itemName=xsmbradpitt.interlinked-theme)
   from the Visual Studio Marketplace.
-- **Cursor** — Cursor installs extensions from Open VSX, where Interlinked is not listed yet.
-  Until it is, install the `.vsix` manually (see below).
+- **Cursor** — search for "Interlinked" in the Extensions view. Cursor installs from
+  [Open VSX](https://open-vsx.org/extension/xsmbradpitt/interlinked-theme).
 - **Manually** — download the `.vsix` from
   [GitHub Releases](https://github.com/xsmBradPitt/interlinked-theme/releases), then run
   `Extensions: Install from VSIX...` from the Command Palette.
